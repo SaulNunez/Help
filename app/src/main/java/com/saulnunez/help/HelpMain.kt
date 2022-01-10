@@ -5,19 +5,26 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_help_main.*
 
 class HelpMain : AppCompatActivity() {
-    var soundAlarm : Boolean = false
-    var locationNotifications = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_help_main)
 
-        buttonSoundAlarm.setOnClickListener {
-            soundAlarm != soundAlarm
-        }
-
-        buttonLocationNotifications.setOnClickListener {
-            locationNotifications != locationNotifications
+        bottom_navigation.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.location_page -> {
+                    supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment_container_view, LocationFragment())
+                            .commit()
+                    true
+                }
+                R.id.sound_page -> {
+                    supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment_container_view, SoundFragment())
+                            .commit()
+                    true
+                }
+                else -> false
+            }
         }
     }
 }

@@ -5,4 +5,6 @@
     <string name="title_activity_settings">Location Message Settings</string>
     <string name="setting_phone_number">Phone</string>
     <string name="settings_phone_info">Send to your closest relative a message with your location upon activation of location messages. If we detect you have changed your location since the last message, will send a new message with the updated location. \\nSelect a phone number that can receive text messages and is available at any time. This number can be changed at any time.</string>
+    <string name="help_sound_alarm">Sound alarm</string>
+    <string name="help_location">Location</string>
 </resources>

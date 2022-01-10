@@ -2,58 +2,27 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutCompat"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".HelpMain">
+    android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/buttonLocationNotifications"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_sharp_location_off_24px" />
-
-    <ImageButton
-        android:id="@+id/buttonSoundAlarm"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:name="com.saulnunez.help.LocationFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_sharp_volume_off_24px" />
+        app:layout_constraintVertical_bias="0.48000002" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/help_main_sound"
-        app:layout_constraintBottom_toTopOf="@+id/buttonLocationNotifications"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginBottom="128dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/help_main_location_notification"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_bar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
