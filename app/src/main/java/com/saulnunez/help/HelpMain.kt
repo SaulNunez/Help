@@ -26,5 +26,7 @@ class HelpMain : AppCompatActivity() {
                 else -> false
             }
         }
+
+        setSupportActionBar(topAppBar)
     }
 }
