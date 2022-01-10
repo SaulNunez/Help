@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="@string/help_location">
+        <Preference
+            app:key="phone_number"
+            app:title="@string/set_phone_number" />
+        <ListPreference
+            app:key="timeframe_between_messages"
+            app:title="@string/time_between_messages"
+            app:defaultValue="fifteen_minutes"
+            app:entries="@array/timeframe_entries"
+            app:entryValues="@array/timeframe_values" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

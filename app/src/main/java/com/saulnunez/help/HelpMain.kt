@@ -23,6 +23,12 @@ class HelpMain : AppCompatActivity() {
                             .commit()
                     true
                 }
+                R.id.settings_page -> {
+                    supportFragmentManager.beginTransaction()
+                            .add(R.id.fragment_container_view, SettingsActivity.SettingsFragment())
+                            .commit()
+                    true
+                }
                 else -> false
             }
         }

@@ -2,9 +2,18 @@
     <string name="app_name">Help</string>
     <string name="help_main_location_notification">Location Notifications</string>
     <string name="help_main_sound">Sound alarm</string>
-    <string name="title_activity_settings">Location Message Settings</string>
-    <string name="setting_phone_number">Phone</string>
+    <string name="set_phone_number">Set phone number</string>
     <string name="settings_phone_info">Send to your closest relative a message with your location upon activation of location messages. If we detect you have changed your location since the last message, will send a new message with the updated location. \\nSelect a phone number that can receive text messages and is available at any time. This number can be changed at any time.</string>
     <string name="help_sound_alarm">Sound alarm</string>
     <string name="help_location">Location</string>
+    <string name="time_between_messages">Time between messages</string>
+    <string name="five_minutes">5 minutes</string>
+    <string name="ten_minutes">10 minutes</string>
+    <string name="fifteen_minutes">15 minutes</string>
+    <string name="twenty_minutes">20 minutes</string>
+    <string name="tirthy_minutes">30 minutes</string>
+    <string name="fortyfive_minutes">45 minutes</string>
+    <string name="sixty_minutes">60 minutes</string>
+    <string name="ninety_minutes">90 minutes</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -10,4 +10,9 @@
         android:enabled="true"
         android:icon="@drawable/ic_baseline_location_on_24"
         android:title="@string/help_location" />
+    <item
+        android:id="@+id/settings_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="@string/settings" />
 </menu>

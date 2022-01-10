@@ -1,0 +1,23 @@
+<resources>
+    <string-array name="timeframe_entries">
+        <item>@string/five_minutes</item>
+        <item>@string/ten_minutes</item>
+        <item>@string/fifteen_minutes</item>
+        <item>@string/twenty_minutes</item>
+        <item>@string/tirthy_minutes</item>
+        <item>@string/fortyfive_minutes</item>
+        <item>@string/sixty_minutes</item>
+        <item>@string/ninety_minutes</item>
+    </string-array>
+
+    <string-array name="timeframe_values">
+        <item>five_minutes</item>
+        <item>ten_minutes</item>
+        <item>fifteen_minutes</item>
+        <item>twenty_minutes</item>
+        <item>tirthy_minutes</item>
+        <item>fortyfive_minutes</item>
+        <item>sixty_minutes</item>
+        <item>ninety_minutes</item>
+    </string-array>
+</resources>
