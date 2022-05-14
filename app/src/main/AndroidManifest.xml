@@ -3,6 +3,10 @@
     package="com.saulnunez.help">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -34,6 +38,10 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <service android:name=".HelpSoundAlarmService"
+            android:foregroundServiceType="mediaPlayback"  />
+        <service android:name=".HelpLocationService"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>
