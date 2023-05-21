@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="@string/help_location">
-        <Preference
+        <EditTextPreference
             app:key="phone_number"
             app:title="@string/set_phone_number" />
         <ListPreference
