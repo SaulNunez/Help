@@ -3,9 +3,12 @@
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -38,7 +41,8 @@
             </intent-filter>
         </receiver>
         <service android:name=".HelpSoundAlarmService"
-            android:foregroundServiceType="mediaPlayback"  />
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false"  />
         <service android:name=".HelpLocationService"
             android:foregroundServiceType="location" />
     </application>

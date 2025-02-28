@@ -13,12 +13,6 @@ class BootCompletedBroadcastReceiver : BroadcastReceiver(){
             } else {
                 context?.startService(Intent(context, HelpLocationService::class.java))
             }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context?.startForegroundService(Intent(context, HelpSoundAlarmService::class.java))
-            } else {
-                context?.startService(Intent(context, HelpSoundAlarmService::class.java))
-            }
         }
     }
 }
