@@ -12,6 +12,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.telephony.SmsManager
@@ -21,7 +22,6 @@ import androidx.core.app.NotificationCompat
 
 class HelpLocationService : Service(), LocationListener {
     private lateinit var locationManager: LocationManager
-    private val phoneNumber = "+1234567890" // Define the target phone number
 
     override fun onCreate() {
         super.onCreate()
@@ -47,7 +47,7 @@ class HelpLocationService : Service(), LocationListener {
             .setContentTitle("Location Tracking")
             .setContentText("Tracking device location...")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-            .addAction(android.R.drawable.ic_delete, "Stop", stopPendingIntent)
+            //.addAction(android.R.drawable.ic_delete, "Stop", stopPendingIntent)
             .setOngoing(true)
             .build()
 
@@ -66,11 +66,31 @@ class HelpLocationService : Service(), LocationListener {
         sendLocationSms(location)
     }
 
+    private fun getPhoneNumber(): String {
+        val sharedPreferences = getSharedPreferences("phone_number", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("phone_number", "") ?: ""
+    }
+
+    private fun createLocationUrl(location: Location): String {
+        val builder = Uri.Builder()
+        builder.scheme("https")
+            .authority("www.google.com")
+            .appendPath("maps")
+            .appendPath("search")
+            .appendQueryParameter("api", "1")
+            .appendQueryParameter("query", "${location.latitude},${location.longitude}")
+        return builder.build().toString()
+    }
+
     private fun sendLocationSms(location: Location) {
         try {
-            val smsManager = SmsManager.getDefault()
-            val message = "Location Update: Lat=${location.latitude}, Lng=${location.longitude}"
-            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
+            val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                applicationContext.getSystemService(SmsManager::class.java)
+            } else {
+                SmsManager.getDefault()
+            }
+            val message = "Location Update: Lat=${location.latitude}, Lng=${location.longitude}\n${createLocationUrl(location)}"
+            smsManager.sendTextMessage(getPhoneNumber(), null, message, null, null)
         } catch (e: Exception) {
             e.printStackTrace()
         }
