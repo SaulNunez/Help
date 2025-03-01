@@ -6,11 +6,6 @@
         android:icon="@drawable/ic_baseline_notifications_active_24"
         android:title="@string/help_sound_alarm" />
     <item
-        android:id="@+id/location_page"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_location_on_24"
-        android:title="@string/help_location" />
-    <item
         android:id="@+id/settings_page"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_settings_24"

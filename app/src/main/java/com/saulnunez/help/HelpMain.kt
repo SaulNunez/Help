@@ -3,24 +3,19 @@ package com.saulnunez.help
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit
-import kotlinx.android.synthetic.main.activity_help_main.*
 import androidx.fragment.app.replace
+import com.saulnunez.help.databinding.ActivityHelpMainBinding
 
 class HelpMain : AppCompatActivity() {
+    private lateinit var binding: ActivityHelpMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_help_main)
 
-        bottom_navigation.setOnItemSelectedListener {
+        binding = ActivityHelpMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.bottomNavigation.setOnItemSelectedListener {
             when(it.itemId){
-                R.id.location_page -> {
-                    supportFragmentManager.
-                    commit {
-                        setReorderingAllowed(true)
-                        replace<LocationFragment>(R.id.fragment_container_view)
-                    }
-                    true
-                }
                 R.id.sound_page -> {
                     supportFragmentManager.commit {
                         setReorderingAllowed(true)
@@ -39,6 +34,6 @@ class HelpMain : AppCompatActivity() {
             }
         }
 
-        setSupportActionBar(topAppBar)
+        setSupportActionBar(binding.topAppBar)
     }
 }
