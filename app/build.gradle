@@ -49,5 +49,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     implementation 'com.github.zagum:Android-SwitchIcon:1.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.8.6'
+    implementation 'com.github.cesarferreira:MaterialComponent.Banner:0.14.0'
 
 }
