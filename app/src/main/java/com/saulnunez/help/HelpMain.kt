@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import android.view.View
 import com.saulnunez.help.databinding.ActivityHelpMainBinding
 
 class HelpMain : AppCompatActivity() {
@@ -74,17 +75,27 @@ class HelpMain : AppCompatActivity() {
             }
 
         if(hasAllPermissions()){
-            binding.banner.dismiss()
+            updateBannerVisibility(false)
         }else{
-            binding.banner.show()
+            updateBannerVisibility(true)
         }
 
-        binding.banner.setLeftButtonAction { binding.banner.dismiss() }
+        binding.banner.setLeftButtonAction { updateBannerVisibility(false) }
         binding.banner.setRightButtonAction {
             requestPermissionLauncher.launch(
                 requestedPermissions.toTypedArray()
             )
+            updateBannerVisibility(false)
+        }
+    }
+
+    private fun updateBannerVisibility(visible: Boolean) {
+        if (visible) {
+            binding.banner.show()
+            binding.bannerDivider.visibility = View.VISIBLE
+        } else {
             binding.banner.dismiss()
+            binding.bannerDivider.visibility = View.GONE
         }
     }
 

@@ -20,13 +20,20 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar"
-        app:bannerBackgroundColor="?attr/colorSurface"
-        app:buttonsTextColor="@color/md_theme_light_primary"
+        app:bannerBackgroundColor="?attr/colorSurfaceContainer"
+        app:icon="@drawable/ic_baseline_notifications_active_24"
+        app:buttonsTextColor="?attr/colorPrimary"
         app:contentText="@string/not_all_permissions_set"
-        app:contentTextColor="@color/md_theme_light_onBackground"
+        app:contentTextColor="?attr/colorOnSurface"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar"
         app:leftButtonText="@string/ignore"
         app:rightButtonText="@string/fix" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/bannerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/banner" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_view"
@@ -36,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner" />
+        app:layout_constraintTop_toBottomOf="@id/bannerDivider" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
