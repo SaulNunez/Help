@@ -1,0 +1,1 @@
+Help is a safety application designed to provide peace of mind. With just a tap, you can trigger a loud sound alarm and automatically send your real-time location to a selected emergency contact via SMS. It continues to track and send updates if your location changes, ensuring help can always find you.
