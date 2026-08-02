@@ -38,5 +38,18 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
         }
+
+        override fun onDisplayPreferenceDialog(preference: androidx.preference.Preference) {
+            if (preference is ContactPreference) {
+                if (parentFragmentManager.findFragmentByTag("androidx.preference.PreferenceFragment.DIALOG") == null) {
+                    val dialogFragment = ContactPreferenceDialogFragmentCompat.newInstance(preference.key)
+                    @Suppress("DEPRECATION")
+                    dialogFragment.setTargetFragment(this, 0)
+                    dialogFragment.show(parentFragmentManager, "androidx.preference.PreferenceFragment.DIALOG")
+                }
+            } else {
+                super.onDisplayPreferenceDialog(preference)
+            }
+        }
     }
 }

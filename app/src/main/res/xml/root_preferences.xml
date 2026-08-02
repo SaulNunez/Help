@@ -1,8 +1,9 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="@string/help_location">
-        <EditTextPreference
+        <com.saulnunez.help.ContactPreference
             app:key="phone_number"
-            app:title="@string/set_phone_number" />
+            app:title="@string/set_phone_number"
+            app:dialogLayout="@layout/contact_preference_dialog" />
     </PreferenceCategory>
 
 </PreferenceScreen>
