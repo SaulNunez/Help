@@ -21,4 +21,6 @@
     <string name="select_contact">Select contact</string>
     <string name="phone_number_hint">e.g. +1 555-123-4567</string>
     <string name="ignore">Ignore</string>
+    <string name="active">Active</string>
+    <string name="inactive">Inactive</string>
 </resources>

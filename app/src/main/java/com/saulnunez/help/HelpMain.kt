@@ -17,7 +17,8 @@ import com.saulnunez.help.databinding.ActivityHelpMainBinding
 class HelpMain : AppCompatActivity() {
     private val requestedPermissions = listOf(
         android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.SEND_SMS)
+        android.Manifest.permission.SEND_SMS,
+    )
 
     private lateinit var binding: ActivityHelpMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,14 +64,10 @@ class HelpMain : AppCompatActivity() {
 
         val requestPermissionLauncher =
             registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions()
+                ActivityResultContracts.RequestMultiplePermissions(),
             ) { map: Map<String, @JvmSuppressWildcards Boolean> ->
                 if (map.containsValue(false)) {
-                    // Explain to the user that the feature is unavailable because the
-                    // feature requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
+                    // TODO: Handle denied permissions by informing the user
                 }
             }
 

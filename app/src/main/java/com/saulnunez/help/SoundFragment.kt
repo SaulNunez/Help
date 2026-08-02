@@ -1,11 +1,17 @@
 package com.saulnunez.help
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 import com.saulnunez.help.databinding.SoundFragmentBinding
 
 class SoundFragment: Fragment(R.layout.sound_fragment) {
@@ -17,7 +23,7 @@ class SoundFragment: Fragment(R.layout.sound_fragment) {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = SoundFragmentBinding.inflate(inflater, container, false)
         repository = HelpRepository(requireContext())
@@ -27,37 +33,91 @@ class SoundFragment: Fragment(R.layout.sound_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.switchAudio.isChecked = repository.isAlarmEnabled
-        binding.switchLocation.isChecked = repository.isLocationEnabled
+        refreshUI()
 
-        binding.switchAudio.setOnCheckedChangeListener { _, isChecked ->
-            repository.isAlarmEnabled = isChecked
-            if(isChecked) {
-                val serviceIntent = Intent(this.activity, HelpSoundAlarmService::class.java)
-                requireActivity().startService(serviceIntent)
-            } else {
-                val stopIntent = Intent(this.activity, HelpSoundAlarmService::class.java)
-                requireActivity().stopService(stopIntent)
-            }
+        binding.cardAudio.setOnClickListener {
+            repository.isAlarmEnabled = !repository.isAlarmEnabled
+            toggleAudioService(repository.isAlarmEnabled)
+            refreshUI()
         }
-        binding.switchLocation.setOnCheckedChangeListener { _, isChecked ->
-            repository.isLocationEnabled = isChecked
-            if(isChecked) {
-                val serviceIntent = Intent(this.activity, HelpLocationService::class.java)
-                requireActivity().startService(serviceIntent)
-            } else {
-                val stopIntent = Intent(this.activity, HelpLocationService::class.java)
-                requireActivity().stopService(stopIntent)
-            }
+
+        binding.cardLocation.setOnClickListener {
+            repository.isLocationEnabled = !repository.isLocationEnabled
+            toggleLocationService(repository.isLocationEnabled)
+            refreshUI()
+        }
+    }
+
+    private fun refreshUI() {
+        updateTileUI(
+            binding.cardAudio,
+            binding.iconAudio,
+            binding.statusAudio,
+            repository.isAlarmEnabled,
+            R.drawable.ic_sharp_volume_up_24px,
+            R.drawable.ic_sharp_volume_off_24px,
+        )
+
+        updateTileUI(
+            binding.cardLocation,
+            binding.iconLocation,
+            binding.statusLocation,
+            repository.isLocationEnabled,
+            R.drawable.ic_sharp_location_on_24px,
+            R.drawable.ic_sharp_location_off_24px,
+        )
+    }
+
+    private fun updateTileUI(
+        card: MaterialCardView,
+        iconView: ImageView,
+        statusText: TextView,
+        isChecked: Boolean,
+        @DrawableRes activeIcon: Int,
+        @DrawableRes inactiveIcon: Int
+    ) {
+        if (isChecked) {
+            val primaryContainer = MaterialColors.getColor(card, com.google.android.material.R.attr.colorPrimaryContainer)
+            val onPrimaryContainer = MaterialColors.getColor(card, com.google.android.material.R.attr.colorOnPrimaryContainer)
+            
+            card.setCardBackgroundColor(ColorStateList.valueOf(primaryContainer))
+            iconView.setImageResource(activeIcon)
+            iconView.imageTintList = ColorStateList.valueOf(onPrimaryContainer)
+            statusText.text = getString(R.string.active)
+            statusText.setTextColor(onPrimaryContainer)
+        } else {
+            val surface = MaterialColors.getColor(card, com.google.android.material.R.attr.colorSurfaceVariant)
+            val onSurfaceVariant = MaterialColors.getColor(card, com.google.android.material.R.attr.colorOnSurfaceVariant)
+            
+            card.setCardBackgroundColor(ColorStateList.valueOf(surface))
+            iconView.setImageResource(inactiveIcon)
+            iconView.imageTintList = ColorStateList.valueOf(onSurfaceVariant)
+            statusText.text = getString(R.string.inactive)
+            statusText.setTextColor(onSurfaceVariant)
+        }
+    }
+
+    private fun toggleAudioService(enabled: Boolean) {
+        val intent = Intent(requireActivity(), HelpSoundAlarmService::class.java)
+        if (enabled) {
+            requireActivity().startService(intent)
+        } else {
+            requireActivity().stopService(intent)
+        }
+    }
+
+    private fun toggleLocationService(enabled: Boolean) {
+        val intent = Intent(requireActivity(), HelpLocationService::class.java)
+        if (enabled) {
+            requireActivity().startService(intent)
+        } else {
+            requireActivity().stopService(intent)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        _binding?.let {
-            it.switchAudio.isChecked = repository.isAlarmEnabled
-            it.switchLocation.isChecked = repository.isLocationEnabled
-        }
+        refreshUI()
     }
 
     override fun onDestroyView() {
