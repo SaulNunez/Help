@@ -23,4 +23,10 @@
     <string name="ignore">Ignore</string>
     <string name="active">Active</string>
     <string name="inactive">Inactive</string>
+    <string name="permission_required_title">Permissions Required</string>
+    <string name="permission_explanation_sms">SMS permission is used to send messages to your emergency contacts when you trigger an alarm or location update.</string>
+    <string name="permission_explanation_location">Location permission is needed to find your coordinates so they can be included in the emergency messages.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>

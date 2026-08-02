@@ -1,17 +1,22 @@
 package com.saulnunez.help
 
+import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import android.view.View
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.saulnunez.help.databinding.ActivityHelpMainBinding
 
 class HelpMain : AppCompatActivity() {
@@ -67,7 +72,18 @@ class HelpMain : AppCompatActivity() {
                 ActivityResultContracts.RequestMultiplePermissions(),
             ) { map: Map<String, @JvmSuppressWildcards Boolean> ->
                 if (map.containsValue(false)) {
-                    // TODO: Handle denied permissions by informing the user
+                    val permanentlyDenied = requestedPermissions.any {
+                        !ActivityCompat.shouldShowRequestPermissionRationale(this, it) &&
+                                ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+                    }
+
+                    if (permanentlyDenied) {
+                        showSettingsDialog()
+                    } else {
+                        updateBannerVisibility(true)
+                    }
+                } else {
+                    updateBannerVisibility(false)
                 }
             }
 
@@ -79,11 +95,43 @@ class HelpMain : AppCompatActivity() {
 
         binding.banner.setLeftButtonAction { updateBannerVisibility(false) }
         binding.banner.setRightButtonAction {
-            requestPermissionLauncher.launch(
-                requestedPermissions.toTypedArray()
-            )
-            updateBannerVisibility(false)
+            val showRationale = requestedPermissions.any {
+                ActivityCompat.shouldShowRequestPermissionRationale(this, it)
+            }
+
+            if (showRationale) {
+                showPermissionRationaleDialog {
+                    requestPermissionLauncher.launch(requestedPermissions.toTypedArray())
+                }
+            } else {
+                requestPermissionLauncher.launch(requestedPermissions.toTypedArray())
+            }
         }
+    }
+
+    private fun showPermissionRationaleDialog(onConfirm: () -> Unit) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.permission_required_title)
+            .setMessage(getString(R.string.permission_explanation_sms) + "\n\n" + getString(R.string.permission_explanation_location))
+            .setPositiveButton(R.string.ok) { _, _ -> onConfirm() }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showSettingsDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.permission_required_title)
+            .setMessage(R.string.not_all_permissions_set)
+            .setPositiveButton(R.string.open_settings) { _, _ -> openAppSettings() }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun openAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+        }
+        startActivity(intent)
     }
 
     private fun updateBannerVisibility(visible: Boolean) {
