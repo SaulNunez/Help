@@ -22,9 +22,11 @@ import androidx.core.app.NotificationCompat
 
 class HelpLocationService : Service(), LocationListener {
     private lateinit var locationManager: LocationManager
+    private lateinit var repository: HelpRepository
 
     override fun onCreate() {
         super.onCreate()
+        repository = HelpRepository(this)
         startForegroundService()
         requestLocationUpdates()
     }
@@ -67,8 +69,7 @@ class HelpLocationService : Service(), LocationListener {
     }
 
     private fun getPhoneNumber(): String {
-        val sharedPreferences = getSharedPreferences("phone_number", Context.MODE_PRIVATE)
-        return sharedPreferences.getString("phone_number", "") ?: ""
+        return repository.phoneNumber ?: ""
     }
 
     private fun createLocationUrl(location: Location): String {

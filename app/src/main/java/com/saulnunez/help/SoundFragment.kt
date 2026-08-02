@@ -11,6 +11,7 @@ import com.saulnunez.help.databinding.SoundFragmentBinding
 class SoundFragment: Fragment(R.layout.sound_fragment) {
     private var _binding: SoundFragmentBinding? = null
     private val binding get() = _binding!!
+    private lateinit var repository: HelpRepository
 
 
     override fun onCreateView(
@@ -19,14 +20,18 @@ class SoundFragment: Fragment(R.layout.sound_fragment) {
         savedInstanceState: Bundle?
     ): View {
         _binding = SoundFragmentBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        repository = HelpRepository(requireContext())
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.switchAudio.isChecked = repository.isAlarmEnabled
+        binding.switchLocation.isChecked = repository.isLocationEnabled
+
         binding.switchAudio.setOnCheckedChangeListener { _, isChecked ->
+            repository.isAlarmEnabled = isChecked
             if(isChecked) {
                 val serviceIntent = Intent(this.activity, HelpSoundAlarmService::class.java)
                 requireActivity().startService(serviceIntent)
@@ -36,6 +41,7 @@ class SoundFragment: Fragment(R.layout.sound_fragment) {
             }
         }
         binding.switchLocation.setOnCheckedChangeListener { _, isChecked ->
+            repository.isLocationEnabled = isChecked
             if(isChecked) {
                 val serviceIntent = Intent(this.activity, HelpLocationService::class.java)
                 requireActivity().startService(serviceIntent)
