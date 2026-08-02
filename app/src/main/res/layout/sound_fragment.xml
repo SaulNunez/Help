@@ -3,19 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:padding="@dimen/grid_2"
     android:orientation="vertical">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/switch_audio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
+        android:contentDescription="@string/help_sound_alarm"
         android:text="@string/help_sound_alarm" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/switch_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="false"
+        android:contentDescription="@string/help_location"
         android:text="@string/help_location" />
 </LinearLayout>

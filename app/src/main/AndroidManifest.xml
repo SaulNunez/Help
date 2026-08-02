@@ -26,9 +26,11 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/settings" />
         <activity
             android:name=".HelpMain"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
