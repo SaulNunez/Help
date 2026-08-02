@@ -38,6 +38,7 @@ class HelpSoundAlarmService: Service() {
             .setContentTitle("Alarm Playing")
             .setContentText("Tap to stop the alarm.")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setContentIntent(stopPendingIntent)
             .addAction(android.R.drawable.ic_delete, "Stop", stopPendingIntent)
             .setOngoing(true)
             .build()
@@ -60,6 +61,7 @@ class HelpSoundAlarmService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == "STOP_ALARM") {
+            HelpRepository(this).isAlarmEnabled = false
             stopSelf()
         }
         return START_STICKY

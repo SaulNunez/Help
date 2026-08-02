@@ -52,6 +52,14 @@ class SoundFragment: Fragment(R.layout.sound_fragment) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        _binding?.let {
+            it.switchAudio.isChecked = repository.isAlarmEnabled
+            it.switchLocation.isChecked = repository.isLocationEnabled
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

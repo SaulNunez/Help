@@ -6,27 +6,41 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.telephony.SmsManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 
-
-class HelpLocationService : Service(), LocationListener {
-    private lateinit var locationManager: LocationManager
+class HelpLocationService : Service() {
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var repository: HelpRepository
+    private val notificationId = 1
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
+                sendLocationSms(location)
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
         repository = HelpRepository(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         startForegroundService()
         requestLocationUpdates()
     }
@@ -43,69 +57,90 @@ class HelpLocationService : Service(), LocationListener {
         val stopIntent = Intent(this, HelpLocationService::class.java).apply {
             action = "STOP_SERVICE"
         }
-        val stopPendingIntent = PendingIntent.getService(this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val stopPendingIntent = PendingIntent.getService(
+            this, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Location Tracking")
-            .setContentText("Tracking device location...")
+            .setContentText("Tracking device location. Tap to stop.")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-            //.addAction(android.R.drawable.ic_delete, "Stop", stopPendingIntent)
+            .setContentIntent(stopPendingIntent)
+            .addAction(android.R.drawable.ic_delete, "Stop", stopPendingIntent)
             .setOngoing(true)
             .build()
 
-        startForeground(1, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+        } else {
+            startForeground(notificationId, notification)
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun requestLocationUpdates() {
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 200f, this)
+            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 60 * 1000)
+                .setMinUpdateDistanceMeters(200f)
+                .build()
+
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, mainLooper)
+        } else {
+            Log.w("HelpLocationService", "Location permission not granted. Stopping service.")
+            stopSelf()
         }
     }
 
-    override fun onLocationChanged(location: Location) {
-        sendLocationSms(location)
-    }
-
-    private fun getPhoneNumber(): String {
-        return repository.phoneNumber ?: ""
-    }
-
     private fun createLocationUrl(location: Location): String {
-        val builder = Uri.Builder()
-        builder.scheme("https")
+        return Uri.Builder()
+            .scheme("https")
             .authority("www.google.com")
             .appendPath("maps")
             .appendPath("search")
             .appendQueryParameter("api", "1")
             .appendQueryParameter("query", "${location.latitude},${location.longitude}")
-        return builder.build().toString()
+            .build()
+            .toString()
     }
 
     private fun sendLocationSms(location: Location) {
+        val phoneNumber = repository.phoneNumber
+        if (phoneNumber.isNullOrBlank()) {
+            Log.w("HelpLocationService", "No phone number set. Skipping SMS.")
+            return
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            Log.w("HelpLocationService", "SMS permission not granted. Skipping SMS.")
+            return
+        }
+
         try {
             val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                applicationContext.getSystemService(SmsManager::class.java)
+                getSystemService(SmsManager::class.java)
             } else {
+                @Suppress("DEPRECATION")
                 SmsManager.getDefault()
             }
             val message = "Location Update: Lat=${location.latitude}, Lng=${location.longitude}\n${createLocationUrl(location)}"
-            smsManager.sendTextMessage(getPhoneNumber(), null, message, null, null)
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("HelpLocationService", "Error sending SMS", e)
         }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == "STOP_SERVICE") {
+            repository.isLocationEnabled = false
             stopSelf()
         }
         return START_STICKY
     }
 
     override fun onDestroy() {
-        locationManager.removeUpdates(this)
+        if (::fusedLocationClient.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
         super.onDestroy()
     }
 
