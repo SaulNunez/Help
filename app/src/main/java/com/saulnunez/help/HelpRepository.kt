@@ -12,11 +12,16 @@ class HelpRepository(context: Context) {
         private const val KEY_PHONE_NUMBER = "phone_number"
         private const val KEY_ALARM_ENABLED = "alarm_enabled"
         private const val KEY_LOCATION_ENABLED = "location_enabled"
+        private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
     }
 
     var phoneNumber: String?
         get() = sharedPreferences.getString(KEY_PHONE_NUMBER, null)
         set(value) = sharedPreferences.edit().putString(KEY_PHONE_NUMBER, value).apply()
+
+    var isOnboardingCompleted: Boolean
+        get() = sharedPreferences.getBoolean(KEY_ONBOARDING_COMPLETED, false)
+        set(value) = sharedPreferences.edit().putBoolean(KEY_ONBOARDING_COMPLETED, value).apply()
 
     var isAlarmEnabled: Boolean
         get() = sharedPreferences.getBoolean(KEY_ALARM_ENABLED, false)

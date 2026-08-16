@@ -1,6 +1,7 @@
 package com.saulnunez.help
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.saulnunez.help.databinding.ActivityHelpMainBinding
 
@@ -26,9 +28,21 @@ class HelpMain : AppCompatActivity() {
     )
 
     private lateinit var binding: ActivityHelpMainBinding
+    private lateinit var repository: HelpRepository
+    private lateinit var requestPermissionLauncher: androidx.activity.result.ActivityResultLauncher<Array<String>>
+
+    private val phoneNumberChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == "phone_number") {
+                refreshBanner()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        repository = HelpRepository(this)
 
         binding = ActivityHelpMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -67,7 +81,7 @@ class HelpMain : AppCompatActivity() {
             }
         }
 
-        val requestPermissionLauncher =
+        requestPermissionLauncher =
             registerForActivityResult(
                 ActivityResultContracts.RequestMultiplePermissions(),
             ) { map: Map<String, @JvmSuppressWildcards Boolean> ->
@@ -79,20 +93,48 @@ class HelpMain : AppCompatActivity() {
 
                     if (permanentlyDenied) {
                         showSettingsDialog()
-                    } else {
-                        updateBannerVisibility(true)
                     }
-                } else {
-                    updateBannerVisibility(false)
                 }
+                refreshBanner()
             }
+    }
 
-        if(hasAllPermissions()){
-            updateBannerVisibility(false)
-        }else{
-            updateBannerVisibility(true)
+    override fun onResume() {
+        super.onResume()
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(phoneNumberChangeListener)
+        refreshBanner()
+    }
+
+    override fun onPause() {
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(phoneNumberChangeListener)
+        super.onPause()
+    }
+
+    private fun refreshBanner() {
+        when {
+            repository.phoneNumber.isNullOrBlank() -> showContactBanner()
+            !hasAllPermissions() -> showPermissionBanner()
+            else -> updateBannerVisibility(false)
         }
+    }
 
+    private fun showContactBanner() {
+        binding.banner.contentText = getString(R.string.contact_required_banner_message)
+        binding.banner.leftButtonText = getString(R.string.ignore)
+        binding.banner.rightButtonText = getString(R.string.set_contact)
+        binding.banner.setLeftButtonAction { updateBannerVisibility(false) }
+        binding.banner.setRightButtonAction {
+            binding.bottomNavigation.selectedItemId = R.id.settings_page
+        }
+        updateBannerVisibility(true)
+    }
+
+    private fun showPermissionBanner() {
+        binding.banner.contentText = getString(R.string.not_all_permissions_set)
+        binding.banner.leftButtonText = getString(R.string.ignore)
+        binding.banner.rightButtonText = getString(R.string.fix)
         binding.banner.setLeftButtonAction { updateBannerVisibility(false) }
         binding.banner.setRightButtonAction {
             val showRationale = requestedPermissions.any {
@@ -107,6 +149,7 @@ class HelpMain : AppCompatActivity() {
                 requestPermissionLauncher.launch(requestedPermissions.toTypedArray())
             }
         }
+        updateBannerVisibility(true)
     }
 
     private fun showPermissionRationaleDialog(onConfirm: () -> Unit) {

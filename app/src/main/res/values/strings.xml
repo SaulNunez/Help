@@ -29,4 +29,11 @@
     <string name="open_settings">Open Settings</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="onboarding_title">Welcome to Help</string>
+    <string name="onboarding_description">Choose a trusted contact who will receive an SMS with your location whenever you trigger an alarm. You can change this later in Settings.</string>
+    <string name="get_started">Get started</string>
+    <string name="skip">Skip for now</string>
+    <string name="phone_number_required">Select a contact or enter a phone number to continue</string>
+    <string name="contact_required_banner_message">Set a contact to receive your location in case of an emergency.</string>
+    <string name="set_contact">Set contact</string>
 </resources>
